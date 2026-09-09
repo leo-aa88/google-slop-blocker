@@ -3,3 +3,5 @@ node_modules/
 src/manifest.json
 # Hand-aligned data table; keep the compact multi-column layout.
 scripts/google-domains.json
+# Test fixtures are raw saved SERP HTML — never reformat them.
+test/fixtures/

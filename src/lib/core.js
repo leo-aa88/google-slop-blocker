@@ -77,9 +77,16 @@
   ];
 
   // If a candidate hide-block contains one of these, it wraps the whole results
-  // area — a sign we climbed too far — so we refuse to hide it. This is the
-  // guard that prevents ever blanking the page.
+  // area — a sign we climbed too far — so we refuse to hide it. This is a
+  // backstop against blanking the page.
   const RESULTS_CONTAINER_SELECTOR = "#search, #rso, #rcnt, #center_col";
+
+  // The canonical marker of a Google organic (or video) result is a link that
+  // wraps a heading: `<a> … <h3>`. The AI Overview card never contains one, so
+  // any block that does is holding real results and must not be hidden. This is
+  // what stops us swallowing results when Google nests the Overview and the
+  // results inside a shared wrapper (e.g. the "GDPR" SERP).
+  const ORGANIC_RESULT_SELECTOR = "a h3";
 
   // The AI Overview title is a heading, not body text. Restricting candidates
   // to headings (never spans/result <h3> titles) keeps us from matching the
@@ -88,12 +95,18 @@
   const OVERVIEW_LABEL_SELECTOR =
     'h1, h2, div[role="heading"], [role="heading"]';
 
+  /** True if `el` contains a Google organic/video result. */
+  function containsOrganicResults(el) {
+    return !!el.querySelector(ORGANIC_RESULT_SELECTOR);
+  }
+
   /**
-   * Climb from a label to the *direct child* of the nearest results container
-   * that holds it, and return that child. Returns null (hide nothing) if we
-   * reach the top of the document without passing through a known results
-   * container — the fail-safe that stops us hiding a page-level wrapper. Pure:
-   * uses only DOM traversal.
+   * Climb from an "AI Overview" label to the largest ancestor that still wraps
+   * only the Overview card — never real results. We stop climbing as soon as
+   * the next parent would pull in organic results or is a structural results
+   * container, and we refuse the result outright if it still holds results or a
+   * results container. Returns null (hide nothing) when there's nothing safe to
+   * hide. Pure: uses only DOM traversal.
    */
   function topLevelBlock(labelEl, rootIds) {
     const roots = new Set(rootIds || ROOT_IDS);
@@ -103,14 +116,19 @@
     let node = labelEl;
     while (node.parentElement) {
       const parent = node.parentElement;
-      if (roots.has(parent.id)) {
-        // node is a direct child of a results container.
-        return roots.has(node.id) ? null : node;
-      }
-      if (parent === body || parent === html) return null; // no root ancestor
+      // Reaching the document edges without passing through a results context
+      // means we're not inside the SERP results — hide nothing (fail-safe).
+      if (parent === body || parent === html) return null;
+      // Stop at a results container, or at a parent that also holds organic
+      // results (climbing into it would hide them). `node` is the Overview card.
+      if (roots.has(parent.id) || containsOrganicResults(parent)) break;
       node = parent;
     }
-    return null;
+    if (!node.parentElement) return null;
+    if (roots.has(node.id)) return null; // never a structural root itself
+    if (node.querySelector(RESULTS_CONTAINER_SELECTOR)) return null;
+    if (containsOrganicResults(node)) return null; // still too broad — bail
+    return node;
   }
 
   /**
@@ -131,11 +149,8 @@
     if (settings.hideOverviews) {
       for (const el of root.querySelectorAll(OVERVIEW_LABEL_SELECTOR)) {
         if (!isAiOverviewLabel(el.textContent)) continue;
-        const block = topLevelBlock(el);
-        // Refuse any block that still contains the results list.
-        if (block && !block.querySelector(RESULTS_CONTAINER_SELECTOR)) {
-          add(block, "overview");
-        }
+        // topLevelBlock returns null unless the block is safe to hide.
+        add(topLevelBlock(el), "overview");
       }
     }
 

@@ -6,6 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-09
+
+### Fixed
+
+- Never hide organic search results. When Google nests the AI Overview and the
+  results inside a shared wrapper (e.g. the "GDPR" query), the scanner now stops
+  climbing before it reaches the results and hides only the Overview card. A
+  block containing an organic result (`a h3`) is never hidden.
+
+### Added
+
+- Fixture-driven tests: drop a saved SERP into `test/fixtures/*.html` to lock in
+  a regression. Universal invariants assert the extension never hides organic
+  results or a structural results container.
+
 ## [1.0.1] - 2026-09-09
 
 ### Fixed
@@ -31,6 +46,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unit, DOM, manifest, and ZIP test suites (`node --test`).
 - CI (lint, format, tests, build) and project docs.
 
-[Unreleased]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/leo-aa88/google-slop-blocker/releases/tag/v1.0.0

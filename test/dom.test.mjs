@@ -49,6 +49,50 @@ test("topLevelBlock returns null when the label IS a root", () => {
   assert.equal(GSB.topLevelBlock(doc.getElementById("rso")), null);
 });
 
+test("findHideTargets hides only the Overview when it shares a wrapper with results", () => {
+  // Regression for the "GDPR" SERP: Google nested the AI Overview and the
+  // organic results inside one wrapper that is a direct child of #rso. Hiding
+  // the wrapper wiped out the results. We must hide only the Overview card.
+  const doc = domFrom(`
+    <div id="rso">
+      <div id="shared-wrapper">
+        <div id="aio"><div role="heading">AI Overview</div><p>slop…</p></div>
+        <div class="g"><a href="#"><h3 id="r1">Real result one</h3></a></div>
+        <div class="g"><a href="#"><h3 id="r2">Real result two</h3></a></div>
+      </div>
+    </div>`);
+
+  const targets = GSB.findHideTargets(doc, ALL_ON);
+  assert.equal(targets.length, 1);
+  assert.equal(targets[0].el.id, "aio");
+  // The hidden block must NOT contain any organic result.
+  assert.equal(targets[0].el.querySelector("a h3"), null);
+});
+
+test("findHideTargets never returns a block containing organic results", () => {
+  // Safety invariant across a few adversarial layouts: whatever we hide, real
+  // results (an <a> wrapping an <h3>) must never be inside it.
+  const layouts = [
+    `<div id="rso"><div><div role="heading">AI Overview</div>
+       <div class="g"><a><h3>r</h3></a></div></div></div>`,
+    `<div id="rcnt"><div id="center_col"><div id="search"><div id="rso">
+       <h2>AI Overview</h2><div class="g"><a><h3>r</h3></a></div>
+     </div></div></div></div>`,
+    `<div id="rso"><section><h2>AI Overview</h2>
+       <a><h3>r</h3></a></section></div>`,
+  ];
+  for (const html of layouts) {
+    const doc = domFrom(html);
+    for (const { el } of GSB.findHideTargets(doc, ALL_ON)) {
+      assert.equal(
+        el.querySelector("a h3"),
+        null,
+        `hid a block containing results in: ${html}`,
+      );
+    }
+  }
+});
+
 test("findHideTargets hides NOTHING when there is no results container", () => {
   // Regression: a label with no #rso/#search/#center_col/#rcnt ancestor must
   // never cause a page-level wrapper to be hidden (the "blanked page" bug).
