@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Google Slop Blocker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Removes Google's AI Overviews (and, optionally, other AI features) from search results. Cross-browser, no tracking.",
   "homepage_url": "https://github.com/leo-aa88/google-slop-blocker",
   "permissions": [

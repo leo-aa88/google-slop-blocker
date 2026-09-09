@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-09
+
 ### Fixed
 
 - Start the `MutationObserver` at `document_start` instead of waiting for
@@ -29,5 +31,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unit, DOM, manifest, and ZIP test suites (`node --test`).
 - CI (lint, format, tests, build) and project docs.
 
-[Unreleased]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/leo-aa88/google-slop-blocker/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/leo-aa88/google-slop-blocker/releases/tag/v1.0.0
