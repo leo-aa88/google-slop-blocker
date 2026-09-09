@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Google Slop Blocker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img src="../icons/icon-48.png" alt="" width="28" height="28" />
+      <h1>Google Slop Blocker</h1>
+    </header>
+
+    <main>
+      <ul class="options" role="list">
+        <li class="option">
+          <label class="switch">
+            <input type="checkbox" id="hideOverviews" />
+            <span class="track" aria-hidden="true"></span>
+            <span class="text">
+              <span class="title">Hide AI Overviews</span>
+              <span class="desc">Remove the AI Overview box from results.</span>
+            </span>
+          </label>
+        </li>
+
+        <li class="option">
+          <label class="switch">
+            <input type="checkbox" id="hideAiMode" />
+            <span class="track" aria-hidden="true"></span>
+            <span class="text">
+              <span class="title">Hide AI Mode tab</span>
+              <span class="desc">Remove the “AI Mode” entry point.</span>
+            </span>
+          </label>
+        </li>
+
+        <li class="option option--accent">
+          <label class="switch">
+            <input type="checkbox" id="webOnly" />
+            <span class="track" aria-hidden="true"></span>
+            <span class="text">
+              <span class="title"
+                >Web results only <span class="badge">prevents</span></span
+              >
+              <span class="desc">
+                Force the plain “Web” view (<code>udm=14</code>). Google never
+                generates an AI Overview here — it’s not just hidden.
+              </span>
+            </span>
+          </label>
+        </li>
+      </ul>
+    </main>
+
+    <footer class="footer">
+      <span id="status" class="status" role="status" aria-live="polite"></span>
+      <a
+        class="link"
+        href="https://github.com/leo-aa88/google-slop-blocker"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Help &amp; source ↗</a
+      >
+    </footer>
+
+    <script src="../lib/core.js"></script>
+    <script src="../lib/settings.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

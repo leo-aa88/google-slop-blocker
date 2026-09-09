@@ -1,0 +1,49 @@
+{
+  "name": "google-slop-blocker",
+  "version": "1.0.0",
+  "description": "Cross-browser extension that removes Google's AI Overviews and AI-generated search clutter.",
+  "license": "MIT",
+  "author": "Leonardo Araujo",
+  "homepage": "https://github.com/leo-aa88/google-slop-blocker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leo-aa88/google-slop-blocker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leo-aa88/google-slop-blocker/issues"
+  },
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "manifest-v3",
+    "google",
+    "ai-overview",
+    "search"
+  ],
+  "private": true,
+  "scripts": {
+    "gen:icons": "python3 scripts/gen-icons.py",
+    "gen:manifest": "node scripts/gen-manifest.mjs",
+    "check:manifest": "node scripts/gen-manifest.mjs --check",
+    "build": "node scripts/build.mjs all --zip",
+    "build:unpacked": "node scripts/build.mjs all",
+    "build:safari": "bash scripts/build-safari.sh",
+    "test": "node --test",
+    "lint": "eslint . && prettier --check .",
+    "lint:ext": "npm run build:unpacked && web-ext lint --source-dir dist/firefox",
+    "format": "prettier --write .",
+    "check": "npm run check:manifest && npm run lint && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0",
+    "globals": "^15.11.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.3.3",
+    "web-ext": "^10.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

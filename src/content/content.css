@@ -1,0 +1,13 @@
+/*
+ * The one rule the extension relies on: content.js tags each element it decides
+ * to hide with `.gsb-hidden`. Injected at document_start so tagged elements are
+ * hidden as soon as the scanner runs.
+ *
+ * We deliberately do NOT ship class/attribute selectors for the AI Overview
+ * here: Google's obfuscated class names change constantly and a stale, overly
+ * broad selector risks hiding real results. The JS label scanner in content.js
+ * is the single, safer source of truth.
+ */
+.gsb-hidden {
+  display: none !important;
+}
