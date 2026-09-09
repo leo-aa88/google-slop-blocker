@@ -10,6 +10,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Never hide organic search results. When Google nests the AI Overview and the
+  results inside a shared wrapper (e.g. the "GDPR" query), the scanner now stops
+  climbing before it reaches the results and hides only the Overview card. A
+  block containing an organic result (`a h3`) is never hidden.
+
+### Added
+
+- Fixture-driven tests: drop a saved SERP into `test/fixtures/*.html` to lock in
+  a regression. Universal invariants assert the extension never hides organic
+  results or a structural results container.
+
 - Start the `MutationObserver` at `document_start` instead of waiting for
   `DOMContentLoaded`, so the AI Overview is hidden as it streams in rather than
   flashing on screen for a moment before results load.

@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  Synthetic reproduction of the "GDPR" SERP layout where Google nested the AI
+  Overview and the organic results inside a single wrapper (a direct child of
+  #rso). Hiding that wrapper wiped out the results. Replace with a real saved
+  SERP when convenient; the harness treats both the same way.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="gsb-expect-overview" content="true" />
+  </head>
+  <body>
+    <div id="rcnt">
+      <div id="center_col">
+        <div id="search">
+          <div id="rso">
+            <div class="shared-wrapper">
+              <div class="aio-card">
+                <div role="heading" aria-level="2">AI Overview</div>
+                <div class="aio-body">
+                  <p>An AI-generated summary about GDPR…</p>
+                  <button>Show more</button>
+                </div>
+              </div>
+
+              <div class="g">
+                <a href="https://gdpr.eu/what-is-gdpr">
+                  <h3>What is GDPR, the EU's data protection law?</h3>
+                </a>
+                <span class="snippet">Europe's data privacy and security law…</span>
+              </div>
+
+              <div class="g">
+                <a href="https://en.wikipedia.org/wiki/GDPR">
+                  <h3>General Data Protection Regulation</h3>
+                </a>
+                <span class="snippet">GDPR is an EU regulation on information privacy…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

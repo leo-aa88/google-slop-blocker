@@ -55,8 +55,14 @@ container, so most breakage falls into one of two buckets:
    `RESULTS_CONTAINER_SELECTOR`). The scanner only hides a direct child of a
    `ROOT_IDS` container and never a block that contains the results list — keep
    that invariant intact.
-5. Add a test case to `test/dom.test.mjs` reproducing the structure you fixed,
-   including a negative case proving real results survive.
+5. Add a regression test. Two good options:
+   - a focused case in `test/dom.test.mjs` with a synthetic DOM, or
+   - **a real fixture**: save the misbehaving results page as
+     `test/fixtures/<name>.html` (DevTools → right-click `<html>` → Copy
+     outerHTML). The fixture harness (`test/fixtures.test.mjs`) automatically
+     asserts the extension never hides organic results (`a h3`) or a results
+     container; add `<meta name="gsb-expect-overview" content="true|false">` to
+     assert whether an Overview should be detected.
 6. Note the date and your locale in the PR description — markup varies by region.
 
 ## Adding a locale
