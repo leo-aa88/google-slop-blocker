@@ -92,7 +92,10 @@
   // requestAnimationFrame callback, i.e. before the frame is painted, so the
   // Overview never flashes on screen. Waiting for DOMContentLoaded, by
   // contrast, lets the Overview paint during initial parse.
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
   scan();
 
   // Re-scan at the usual milestones in case content settles between frames.
