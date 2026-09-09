@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest an improvement or a new bit of AI clutter to hide
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem or idea?
+      placeholder: I'd also like to hide …
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should it work? A new toggle? A new selector?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

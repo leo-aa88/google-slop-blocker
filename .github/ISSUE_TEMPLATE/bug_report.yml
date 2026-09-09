@@ -1,0 +1,68 @@
+name: Bug report
+description: Something isn't working (e.g. an AI Overview still shows)
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! For "Overview still visible" bugs, the HTML of the
+        Overview container is the single most useful thing you can include — it's
+        what lets us fix the selector.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect instead?
+      placeholder: The AI Overview still appears at the top of results for "…"
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Edge
+        - Firefox
+        - Safari
+        - Brave
+        - Vivaldi
+        - Opera
+        - Other (note below)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Browser version & extension version
+      placeholder: "Chrome 140.0 · extension 1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: locale
+    attributes:
+      label: Google language / region
+      description: Selector markup varies by region — this really helps.
+      placeholder: "en-US / google.com"
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Which toggles are on?
+      placeholder: "Hide AI Overviews: on · Hide AI Mode: on · Web results only: off"
+    validations:
+      required: true
+  - type: textarea
+    id: html
+    attributes:
+      label: Overview container HTML (if applicable)
+      description: Right-click the Overview → Inspect → right-click the container → Copy → Copy outerHTML.
+      render: html
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Search for "…"
+        2. …
