@@ -87,19 +87,17 @@
 
   const observer = new MutationObserver(scheduleScan);
 
-  function start() {
-    scan();
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-    });
-  }
+  // Observe from document_start (documentElement exists this early) so the AI
+  // Overview is caught and hidden as Google streams it in — the scan runs in a
+  // requestAnimationFrame callback, i.e. before the frame is painted, so the
+  // Overview never flashes on screen. Waiting for DOMContentLoaded, by
+  // contrast, lets the Overview paint during initial parse.
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  scan();
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, { once: true });
-  } else {
-    start();
-  }
+  // Re-scan at the usual milestones in case content settles between frames.
+  document.addEventListener("DOMContentLoaded", scan, { once: true });
+  window.addEventListener("load", scan, { once: true });
 
   // ---- reconcile with real storage, then keep in sync
   function apply(newSettings) {

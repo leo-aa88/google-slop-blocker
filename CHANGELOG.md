@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Start the `MutationObserver` at `document_start` instead of waiting for
+  `DOMContentLoaded`, so the AI Overview is hidden as it streams in rather than
+  flashing on screen for a moment before results load.
+
 ## [1.0.0] - 2026-09-09
 
 ### Added
