@@ -1,11 +1,27 @@
 name: Release
 
+# Manually triggered from the Actions tab ("Run workflow"). It verifies the
+# version, runs the full check, builds the per-browser zips, creates the tag,
+# and publishes a GitHub Release with the zips attached.
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release, e.g. 1.2.0 (must match package.json). Leave blank to use package.json.
+        required: false
+        type: string
+      prerelease:
+        description: Mark this release as a pre-release.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -13,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -21,13 +39,33 @@ jobs:
 
       - run: npm ci
 
-      - name: Verify version matches tag
+      - name: Resolve and verify version
+        id: version
         run: |
-          PKG_VERSION="v$(node -p "require('./package.json').version")"
-          if [ "$PKG_VERSION" != "${GITHUB_REF_NAME}" ]; then
-            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json ($PKG_VERSION)"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          MANIFEST_VERSION="$(node -p "require('./src/manifest.json').version")"
+          INPUT="${{ inputs.version }}"
+          VERSION="${INPUT:-$PKG_VERSION}"
+          VERSION="${VERSION#v}"   # tolerate a leading 'v'
+
+          if [ "$PKG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "::error::package.json ($PKG_VERSION) and src/manifest.json ($MANIFEST_VERSION) disagree. Bump both."
             exit 1
           fi
+          if [ "$VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Requested version $VERSION does not match package.json ($PKG_VERSION). Bump package.json + manifest first."
+            exit 1
+          fi
+
+          TAG="v$VERSION"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists. Bump the version before releasing."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >>"$GITHUB_OUTPUT"
+          echo "tag=$TAG" >>"$GITHUB_OUTPUT"
+          echo "Releasing $TAG"
 
       - name: Full check
         run: npm run check
@@ -38,5 +76,10 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           generate_release_notes: true
+          prerelease: ${{ inputs.prerelease }}
           files: dist/*.zip
+          fail_on_unmatched_files: true
